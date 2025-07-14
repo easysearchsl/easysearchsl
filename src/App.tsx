@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import { Listings } from "./pages/Listings";
+import { Team } from "./pages/Team";
+import { Analytics } from "./pages/Analytics";
+import { Subscription } from "./pages/Subscription";
+import { Browse } from "./pages/Browse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,11 +24,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
-          <Route path="/listings" element={<AppLayout><div>Listings Page</div></AppLayout>} />
-          <Route path="/team" element={<AppLayout><div>Team Page</div></AppLayout>} />
-          <Route path="/analytics" element={<AppLayout><div>Analytics Page</div></AppLayout>} />
-          <Route path="/subscription" element={<AppLayout><div>Subscription Page</div></AppLayout>} />
-          <Route path="/browse" element={<AppLayout><div>Browse Directory</div></AppLayout>} />
+          <Route path="/listings" element={<AppLayout><Listings /></AppLayout>} />
+          <Route path="/team" element={<AppLayout><Team /></AppLayout>} />
+          <Route path="/analytics" element={<AppLayout><Analytics /></AppLayout>} />
+          <Route path="/subscription" element={<AppLayout><Subscription /></AppLayout>} />
+          <Route path="/browse" element={<AppLayout><Browse /></AppLayout>} />
           <Route path="/featured" element={<AppLayout><div>Featured Listings</div></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
