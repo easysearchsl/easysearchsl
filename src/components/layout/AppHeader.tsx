@@ -27,13 +27,13 @@ export function AppHeader() {
       <div className="flex items-center gap-4">
         <SidebarTrigger />
         <div>
-          <h2 className="font-semibold text-foreground">{organization.name}</h2>
+          <h2 className="font-semibold text-brand-orange">{organization.name}</h2>
           <p className="text-sm text-muted-foreground">Business Directory</p>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="hover:bg-brand-blue/10 hover:text-brand-blue">
           <Bell className="h-4 w-4" />
         </Button>
 
