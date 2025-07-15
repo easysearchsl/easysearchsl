@@ -11,8 +11,15 @@ import {
   BarChart3,
   CreditCard
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { CreateListingForm } from "@/components/forms/CreateListingForm";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  
   const stats = {
     totalListings: 12,
     activeListings: 10,
@@ -37,10 +44,17 @@ export default function Dashboard() {
             Welcome back! Here's what's happening with your business listings.
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Create Listing
-        </Button>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Create Listing
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <CreateListingForm onClose={() => setIsCreateDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Stats Grid */}
@@ -105,19 +119,35 @@ export default function Dashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2"
+              onClick={() => setIsCreateDialogOpen(true)}
+            >
               <Plus className="h-4 w-4" />
               Create New Listing
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2"
+              onClick={() => navigate('/team')}
+            >
               <Users className="h-4 w-4" />
               Invite Team Member
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2"
+              onClick={() => navigate('/analytics')}
+            >
               <BarChart3 className="h-4 w-4" />
               View Analytics
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2"
+              onClick={() => navigate('/subscription')}
+            >
               <CreditCard className="h-4 w-4" />
               Upgrade Plan
             </Button>
@@ -172,7 +202,11 @@ export default function Dashboard() {
                     <p className="font-semibold">{listing.rating}</p>
                     <p className="text-muted-foreground">Rating</p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/listings')}
+                  >
                     View Details
                   </Button>
                 </div>

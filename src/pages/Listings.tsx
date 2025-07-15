@@ -13,6 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { CreateListingForm } from "@/components/forms/CreateListingForm";
+import { useToast } from "@/hooks/use-toast";
 
 const mockListings: Listing[] = [
   {
@@ -89,6 +92,27 @@ export function Listings() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const { toast } = useToast();
+  
+  const handleEditListing = (id: string) => {
+    toast({
+      title: "Edit Listing",
+      description: "Edit functionality will be implemented soon.",
+    });
+  };
+
+  const handleViewListing = (id: string) => {
+    window.open(`/browse?listing=${id}`, '_blank');
+  };
+
+  const handleDeleteListing = (id: string) => {
+    toast({
+      title: "Delete Listing",
+      description: "Are you sure you want to delete this listing?",
+      variant: "destructive",
+    });
+  };
 
   const categories = ["All Categories", "Food & Beverage", "Technology", "Health & Fitness", "Retail", "Services"];
   const statuses = ["All Status", "Published", "Draft", "Archived"];
@@ -123,10 +147,17 @@ export function Listings() {
             Manage your business listings and track their performance
           </p>
         </div>
-        <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
-          <Plus className="h-4 w-4 mr-2" />
-          New Listing
-        </Button>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+              <Plus className="h-4 w-4 mr-2" />
+              New Listing
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <CreateListingForm onClose={() => setIsCreateDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Stats Cards */}
@@ -249,8 +280,8 @@ export function Listings() {
             <ListingCard
               key={listing.id}
               listing={listing}
-              onEdit={() => console.log("Edit", listing.id)}
-              onView={() => console.log("View", listing.id)}
+              onEdit={() => handleEditListing(listing.id)}
+              onView={() => handleViewListing(listing.id)}
               onToggleStatus={() => console.log("Toggle status", listing.id)}
             />
           ))}

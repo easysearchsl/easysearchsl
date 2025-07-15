@@ -13,7 +13,10 @@ import {
   Globe,
   Grid,
   List,
-  Sparkles
+  Sparkles,
+  ArrowLeft,
+  Heart,
+  Share2
 } from "lucide-react";
 import {
   Select,
@@ -22,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface PublicListing {
   id: string;
@@ -32,6 +37,7 @@ interface PublicListing {
   rating: number;
   reviewCount: number;
   businessHours: string;
+  location: string;
   phone?: string;
   website?: string;
   featured?: boolean;
@@ -48,6 +54,7 @@ const mockListings: PublicListing[] = [
     rating: 4.8,
     reviewCount: 124,
     businessHours: "Mon-Fri 6AM-8PM, Sat-Sun 7AM-9PM",
+    location: "123 Main St, Downtown",
     phone: "(555) 123-4567",
     website: "premiumcoffee.com",
     featured: true,
@@ -62,6 +69,7 @@ const mockListings: PublicListing[] = [
     rating: 4.5,
     reviewCount: 87,
     businessHours: "Mon-Sat 9AM-6PM",
+    location: "456 Tech Ave, Business District",
     phone: "(555) 234-5678",
     featured: false,
     images: []
@@ -75,6 +83,7 @@ const mockListings: PublicListing[] = [
     rating: 4.7,
     reviewCount: 203,
     businessHours: "Mon-Sun 5AM-11PM",
+    location: "789 Fitness Blvd, Uptown",
     phone: "(555) 345-6789",
     website: "urbanfitness.com",
     featured: true,
@@ -89,6 +98,7 @@ const mockListings: PublicListing[] = [
     rating: 4.6,
     reviewCount: 156,
     businessHours: "Tue-Sun 6AM-3PM",
+    location: "321 Baker St, Old Town",
     phone: "(555) 456-7890",
     featured: false,
     images: []
@@ -96,11 +106,17 @@ const mockListings: PublicListing[] = [
 ];
 
 export function Browse() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const [listings] = useState<PublicListing[]>(mockListings);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  
+  // Check if we're viewing a specific listing
+  const listingId = searchParams.get('listing');
 
   const categories = ["All Categories", "Food & Beverage", "Technology", "Health & Fitness", "Retail", "Services"];
 
@@ -146,8 +162,8 @@ export function Browse() {
     ));
   };
 
-  const ListingCard = ({ listing }: { listing: PublicListing }) => (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+  const ListingCard = ({ listing, onClick }: { listing: PublicListing; onClick?: () => void }) => (
+    <Card className="hover:shadow-lg transition-shadow cursor-pointer group" onClick={onClick}>
       {listing.featured && (
         <div className="bg-gradient-to-r from-brand-orange to-brand-blue text-white px-3 py-1 text-xs font-medium flex items-center gap-1">
           <Sparkles className="h-3 w-3" />
@@ -213,13 +229,160 @@ export function Browse() {
           <span className="text-sm text-muted-foreground">
             {listing.reviewCount} reviews
           </span>
-          <Button size="sm" className="bg-brand-blue hover:bg-brand-blue/90 text-white">
+          <Button 
+            size="sm" 
+            className="bg-brand-blue hover:bg-brand-blue/90 text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/browse?listing=${listing.id}`);
+            }}
+          >
             View Details
           </Button>
         </div>
       </CardContent>
     </Card>
   );
+
+  // If viewing a specific listing, show detailed view
+  if (listingId) {
+    const listing = mockListings.find(l => l.id === listingId);
+    if (!listing) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Card className="max-w-md text-center">
+            <CardContent className="p-8">
+              <h2 className="text-2xl font-bold mb-4">Listing Not Found</h2>
+              <p className="text-muted-foreground mb-6">The listing you're looking for doesn't exist.</p>
+              <Button onClick={() => navigate('/browse')}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Browse
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <Button 
+            variant="ghost" 
+            className="mb-6"
+            onClick={() => navigate('/browse')}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Browse
+          </Button>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardContent className="p-8">
+                  <div className="aspect-video bg-muted rounded-lg mb-6 flex items-center justify-center">
+                    <span className="text-muted-foreground">Business Photo</span>
+                  </div>
+                  
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h1 className="text-3xl font-bold mb-2">{listing.title}</h1>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center">
+                          {renderStars(listing.rating)}
+                          <span className="ml-2 text-sm text-muted-foreground">
+                            {listing.rating} ({listing.reviewCount} reviews)
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-muted-foreground mb-4">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {listing.location}
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="icon">
+                        <Heart className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <Badge className="mb-4">{listing.category}</Badge>
+                  
+                  <div className="prose max-w-none">
+                    <h3 className="text-xl font-semibold mb-3">About</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {listing.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button className="w-full justify-start gap-2">
+                    <Phone className="h-4 w-4" />
+                    Call Now
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <Globe className="h-4 w-4" />
+                    Visit Website
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Hours</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Monday</span>
+                      <span>9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tuesday</span>
+                      <span>9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Wednesday</span>
+                      <span>9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Thursday</span>
+                      <span>9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Friday</span>
+                      <span>9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Saturday</span>
+                      <span>10:00 AM - 4:00 PM</span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Sunday</span>
+                      <span>Closed</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -251,7 +414,11 @@ export function Browse() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredListings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <ListingCard 
+                key={listing.id} 
+                listing={listing} 
+                onClick={() => navigate(`/browse?listing=${listing.id}`)} 
+              />
             ))}
           </div>
         </div>
@@ -336,7 +503,11 @@ export function Browse() {
             : "space-y-4"
         }>
           {filteredAndSortedListings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
+            <ListingCard 
+              key={listing.id} 
+              listing={listing} 
+              onClick={() => navigate(`/browse?listing=${listing.id}`)} 
+            />
           ))}
         </div>
 

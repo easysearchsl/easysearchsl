@@ -21,6 +21,11 @@ import {
   Wand2
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+
+interface CreateListingFormProps {
+  onClose?: () => void;
+}
 
 interface BusinessHours {
   [key: string]: {
@@ -53,7 +58,8 @@ const categories = [
   "Professional Services"
 ];
 
-export function CreateListingForm() {
+export function CreateListingForm({ onClose }: CreateListingFormProps) {
+  const { toast } = useToast();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -127,7 +133,13 @@ export function CreateListingForm() {
     };
     
     console.log('Saving listing:', listingData);
-    // Handle form submission
+    toast({
+      title: status === 'draft' ? "Draft Saved!" : "Listing Published!",
+      description: status === 'draft' 
+        ? "Your listing has been saved as a draft." 
+        : "Your listing is now live and visible to customers.",
+    });
+    onClose?.();
   };
 
   return (
