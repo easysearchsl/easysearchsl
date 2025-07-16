@@ -11,6 +11,8 @@ import { Team } from "./pages/Team";
 import { Analytics } from "./pages/Analytics";
 import { Subscription } from "./pages/Subscription";
 import { Browse } from "./pages/Browse";
+import Featured from "./pages/Featured";
+import ListingView from "./pages/ListingView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +31,8 @@ const App = () => (
           <Route path="/analytics" element={<AppLayout><Analytics /></AppLayout>} />
           <Route path="/subscription" element={<AppLayout><Subscription /></AppLayout>} />
           <Route path="/browse" element={<AppLayout><Browse /></AppLayout>} />
-          <Route path="/featured" element={<AppLayout><div>Featured Listings</div></AppLayout>} />
+          <Route path="/featured" element={<AppLayout><Featured /></AppLayout>} />
+          <Route path="/listings/:slug" element={<AppLayout><ListingView /></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
