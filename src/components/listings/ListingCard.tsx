@@ -1,176 +1,184 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Star, Edit, Eye, MoreHorizontal } from "lucide-react";
-import { Listing, BusinessHours } from "@/types";
+import { 
+  MoreHorizontal, 
+  Eye, 
+  Edit, 
+  Clock, 
+  Star, 
+  MapPin,
+  Calendar
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-// Extended interface for display purposes
-interface ListingWithStats extends Listing {
-  rating?: number;
-  reviewCount?: number;
-}
+import { Listing } from "@/types";
 
 interface ListingCardProps {
-  listing: ListingWithStats;
-  onEdit?: () => void;
-  onView?: () => void;
-  onToggleStatus?: () => void;
-  showActions?: boolean;
+  listing: Listing;
+  onEdit: () => void;
+  onView: () => void;
+  onToggleStatus: () => void;
+  showLocation?: boolean;
 }
 
-export function ListingCard({ 
-  listing, 
-  onEdit, 
-  onView, 
-  onToggleStatus,
-  showActions = true 
-}: ListingCardProps) {
+export function ListingCard({ listing, onEdit, onView, onToggleStatus, showLocation = false }: ListingCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
-      default:
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+      case 'published': return 'bg-green-100 text-green-800 border-green-200';
+      case 'draft': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'archived': return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const formatBusinessHours = (businessHours: BusinessHours): string => {
-    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const todayKey = dayNames[today] as keyof BusinessHours;
-    const todayHours = businessHours[todayKey];
+  const isFeatured = listing.featured_until && new Date(listing.featured_until) > new Date();
+  const isOpen = checkIfOpen(listing.business_hours);
+
+  function checkIfOpen(hours: any): boolean {
+    const now = new Date();
+    const currentDay = now.toLocaleDateString('en', { weekday: 'lowercase' }) as keyof typeof hours;
+    const currentTime = now.toTimeString().slice(0, 5);
     
-    if (todayHours.closed) {
-      return 'Closed today';
+    const dayHours = hours[currentDay];
+    if (!dayHours || dayHours.closed) return false;
+    
+    if (dayHours.open && dayHours.close) {
+      return currentTime >= dayHours.open && currentTime <= dayHours.close;
     }
     
-    if (todayHours.open && todayHours.close) {
-      return `${todayHours.open} - ${todayHours.close}`;
-    }
-    
-    return 'Hours vary';
-  };
+    return false;
+  }
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="group hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg text-foreground line-clamp-1">
-              {listing.title}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              {listing.category}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-lg text-foreground truncate">
+                {listing.title}
+              </h3>
+              {isFeatured && (
+                <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                  <Star className="h-3 w-3 mr-1" />
+                  Featured
+                </Badge>
+              )}
+            </div>
+            
+            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+              {listing.description}
             </p>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="text-xs">
+                {listing.category}
+              </Badge>
+              <Badge 
+                variant="outline" 
+                className={`text-xs ${getStatusColor(listing.status)}`}
+              >
+                {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+              </Badge>
+              {isOpen && (
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  <Clock className="h-3 w-3 mr-1" />
+                  Open
+                </Badge>
+              )}
+            </div>
           </div>
-          {showActions && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onView}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  View
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onToggleStatus}>
-                  {listing.status === 'published' ? 'Archive' : 'Publish'}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={onView}>
+                <Eye className="h-4 w-4 mr-2" />
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onEdit}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onToggleStatus}>
+                Toggle Status
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
-
-      <CardContent className="pb-3">
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-          {listing.description}
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          {listing.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-          {listing.tags.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{listing.tags.length - 3} more
-            </Badge>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          {listing.rating && listing.reviewCount ? (
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span>{listing.rating.toFixed(1)}</span>
-              <span>({listing.reviewCount} reviews)</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 text-gray-300" />
-              <span>No reviews</span>
+      
+      <CardContent className="pt-0">
+        <div className="space-y-3">
+          {/* Location Info (if enabled) */}
+          {showLocation && (listing.district || listing.chiefdom) && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4" />
+              <span>
+                {listing.chiefdom && listing.district 
+                  ? `${listing.chiefdom}, ${listing.district}`
+                  : listing.chiefdom || listing.district
+                }
+              </span>
             </div>
           )}
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            <span>{formatBusinessHours(listing.business_hours)}</span>
+          
+          {/* Tags */}
+          {listing.tags && listing.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {listing.tags.slice(0, 3).map((tag, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+              {listing.tags.length > 3 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{listing.tags.length - 3} more
+                </Badge>
+              )}
+            </div>
+          )}
+          
+          {/* Meta info */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              <span>Updated {new Date(listing.updated_at).toLocaleDateString()}</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onView}
+                className="h-7 px-2 text-xs"
+              >
+                <Eye className="h-3 w-3 mr-1" />
+                View
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onEdit}
+                className="h-7 px-2 text-xs"
+              >
+                <Edit className="h-3 w-3 mr-1" />
+                Edit
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>
-
-      <CardFooter className="pt-3 border-t">
-        <div className="flex items-center justify-between w-full">
-          <Badge 
-            variant="outline" 
-            className={getStatusColor(listing.status)}
-          >
-            {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
-          </Badge>
-          
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={onView}
-              className="hover:bg-brand-blue/10 hover:text-brand-blue hover:border-brand-blue"
-            >
-              <Eye className="h-4 w-4 mr-1" />
-              View
-            </Button>
-            {showActions && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={onEdit}
-                className="hover:bg-brand-orange/10 hover:text-brand-orange hover:border-brand-orange"
-              >
-                <Edit className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
