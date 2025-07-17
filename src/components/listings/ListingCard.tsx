@@ -1,4 +1,5 @@
 
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export function ListingCard({ listing, onEdit, onView, onToggleStatus, showLocat
 
   function checkIfOpen(hours: any): boolean {
     const now = new Date();
-    const currentDay = now.toLocaleDateString('en', { weekday: 'lowercase' }) as keyof typeof hours;
+    const currentDay = now.toLocaleDateString('en', { weekday: 'long' }).toLowerCase() as keyof typeof hours;
     const currentTime = now.toTimeString().slice(0, 5);
     
     const dayHours = hours[currentDay];
@@ -182,3 +183,4 @@ export function ListingCard({ listing, onEdit, onView, onToggleStatus, showLocat
     </Card>
   );
 }
+

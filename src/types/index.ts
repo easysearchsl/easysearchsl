@@ -45,6 +45,8 @@ export interface Listing {
   contact_phone?: string;
   website_url?: string;
   featured_until?: string;
+  district?: string;
+  chiefdom?: string;
   created_by: string;
   created_at: string;
   updated_at: string;
