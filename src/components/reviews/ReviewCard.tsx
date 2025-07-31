@@ -9,6 +9,10 @@ import { formatDistanceToNow } from "date-fns";
 // Extended interface for display purposes
 interface ReviewWithUser extends Review {
   user: User;
+  listing?: {
+    title: string;
+    slug: string;
+  };
   response?: {
     message: string;
     createdAt: string;
