@@ -14,6 +14,12 @@ import { Browse } from "./pages/Browse";
 import Featured from "./pages/Featured";
 import ListingView from "./pages/ListingView";
 import NotFound from "./pages/NotFound";
+import PublicSubmit from "./pages/PublicSubmit";
+import PricingPlans from "./pages/PricingPlans";
+import Inbox from "./pages/Inbox";
+import Events from "./pages/Events";
+import Coupons from "./pages/Coupons";
+import AdvancedSearch from "./pages/AdvancedSearch";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +39,12 @@ const App = () => (
           <Route path="/browse" element={<AppLayout><Browse /></AppLayout>} />
           <Route path="/featured" element={<AppLayout><Featured /></AppLayout>} />
           <Route path="/listings/:slug" element={<AppLayout><ListingView /></AppLayout>} />
+          <Route path="/submit" element={<PublicSubmit />} />
+          <Route path="/pricing" element={<PricingPlans />} />
+          <Route path="/inbox" element={<AppLayout><Inbox /></AppLayout>} />
+          <Route path="/events" element={<AppLayout><Events /></AppLayout>} />
+          <Route path="/coupons" element={<AppLayout><Coupons /></AppLayout>} />
+          <Route path="/search" element={<AppLayout><AdvancedSearch /></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
