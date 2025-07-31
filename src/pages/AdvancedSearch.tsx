@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ListingCard } from "@/components/listings/ListingCard";
-import { SearchFilters } from "@/components/search/SearchFilters";
+import { AdvancedSearchFilters } from "@/components/search/AdvancedSearchFilters";
 import { 
   Search, 
   Filter, 
@@ -18,7 +18,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { Listing, SearchFilters as SearchFiltersType } from "@/types";
-import { useSearch } from "@/hooks/useSearch";
+import { useAdvancedSearch } from "@/hooks/useAdvancedSearch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 
@@ -34,7 +34,7 @@ export default function AdvancedSearch() {
     searchResults,
     isLoading,
     suggestions
-  } = useSearch();
+  } = useAdvancedSearch();
 
   const handleNaturalSearch = (query: string) => {
     setNaturalQuery(query);
@@ -191,7 +191,7 @@ export default function AdvancedSearch() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <SearchFilters
+                <AdvancedSearchFilters
                   filters={filters}
                   onFiltersChange={updateFilters}
                 />

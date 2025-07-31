@@ -300,7 +300,7 @@ export default function DashboardReviews() {
 
             <div className="space-y-4">
               {filteredReviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
+                <ReviewCard key={review.id} review={{...review, user: { id: "user1", email: "user@example.com", full_name: "Anonymous User", created_at: "2024-01-01T00:00:00Z", updated_at: "2024-01-01T00:00:00Z" }, listing: { title: "Sample Listing", slug: "sample" }}} />
               ))}
             </div>
 
@@ -335,7 +335,7 @@ export default function DashboardReviews() {
               weekAgo.setDate(weekAgo.getDate() - 7);
               return reviewDate >= weekAgo;
             }).map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard key={review.id} review={{...review, user: { id: "user1", email: "user@example.com", full_name: "Anonymous User", created_at: "2024-01-01T00:00:00Z", updated_at: "2024-01-01T00:00:00Z" }, listing: { title: "Sample Listing", slug: "sample" }}} />
             ))}
           </div>
         </TabsContent>
@@ -343,7 +343,7 @@ export default function DashboardReviews() {
         <TabsContent value="needs-response">
           <div className="space-y-4">
             {reviews.filter(r => r.rating <= 3).map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard key={review.id} review={{...review, user: { id: "user1", email: "user@example.com", full_name: "Anonymous User", created_at: "2024-01-01T00:00:00Z", updated_at: "2024-01-01T00:00:00Z" }, listing: { title: "Sample Listing", slug: "sample" }}} />
             ))}
           </div>
         </TabsContent>
@@ -351,7 +351,7 @@ export default function DashboardReviews() {
         <TabsContent value="high-rated">
           <div className="space-y-4">
             {reviews.filter(r => r.rating >= 4).map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard key={review.id} review={{...review, user: { id: "user1", email: "user@example.com", full_name: "Anonymous User", created_at: "2024-01-01T00:00:00Z", updated_at: "2024-01-01T00:00:00Z" }, listing: { title: "Sample Listing", slug: "sample" }}} />
             ))}
           </div>
         </TabsContent>

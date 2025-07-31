@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +13,9 @@ const mockListings: Listing[] = [
   {
     id: "1",
     organization_id: "org1",
+    slug: "mountain-view-coffee-house",
     title: "Mountain View Coffee House",
+    tagline: "Premium coffee with stunning views",
     description: "Premium coffee and pastries with stunning mountain views. We source our beans directly from local farmers.",
     category: "Food & Beverage",
     tags: ["coffee", "pastries", "organic", "mountain view", "wifi"],
@@ -29,8 +30,22 @@ const mockListings: Listing[] = [
       saturday: { open: "07:00", close: "21:00" },
       sunday: { open: "07:00", close: "21:00" }
     },
-    status: "published",
+    price_range: "moderate",
     images: [],
+    videos: [],
+    faqs: [],
+    announcements: [],
+    deals: [],
+    menu: [],
+    events: [],
+    contact_email: "info@mountainview.com",
+    social_links: {},
+    reviews: [],
+    rating: 4.5,
+    review_count: 89,
+    booking_enabled: false,
+    status: "published",
+    verified: true,
     created_by: "user1",
     created_at: "2024-01-15T10:00:00Z",
     updated_at: "2024-01-20T15:30:00Z"
@@ -38,7 +53,9 @@ const mockListings: Listing[] = [
   {
     id: "2",
     organization_id: "org2",
+    slug: "techfix-pro-services",
     title: "TechFix Pro Services",
+    tagline: "Fast, reliable tech repairs",
     description: "Professional computer and mobile device repair. Quick turnaround times and competitive pricing.",
     category: "Technology",
     tags: ["repair", "computers", "phones", "professional", "warranty"],
@@ -53,9 +70,23 @@ const mockListings: Listing[] = [
       saturday: { open: "09:00", close: "16:00" },
       sunday: { closed: true }
     },
-    status: "published",
+    price_range: "budget",
     images: [],
+    videos: [],
+    faqs: [],
+    announcements: [],
+    deals: [],
+    menu: [],
+    events: [],
+    contact_email: "support@techfix.com",
+    social_links: {},
+    reviews: [],
+    rating: 4.2,
+    review_count: 156,
+    booking_enabled: true,
+    status: "published",
     featured_until: "2024-02-15T00:00:00Z",
+    verified: true,
     created_by: "user2",
     created_at: "2024-01-10T12:00:00Z",
     updated_at: "2024-01-18T09:15:00Z"
@@ -63,7 +94,9 @@ const mockListings: Listing[] = [
   {
     id: "3",
     organization_id: "org3",
+    slug: "fitlife-wellness-studio",
     title: "FitLife Wellness Studio",
+    tagline: "Modern fitness, personalized training",
     description: "Modern fitness studio with state-of-the-art equipment and certified personal trainers.",
     category: "Health & Fitness",
     tags: ["fitness", "gym", "personal training", "yoga", "nutrition"],
@@ -78,8 +111,22 @@ const mockListings: Listing[] = [
       saturday: { open: "06:00", close: "22:00" },
       sunday: { open: "07:00", close: "21:00" }
     },
-    status: "draft",
+    price_range: "premium",
     images: [],
+    videos: [],
+    faqs: [],
+    announcements: [],
+    deals: [],
+    menu: [],
+    events: [],
+    contact_email: "info@fitlife.com",
+    social_links: {},
+    reviews: [],
+    rating: 4.3,
+    review_count: 67,
+    booking_enabled: true,
+    status: "draft",
+    verified: false,
     created_by: "user3",
     created_at: "2024-01-22T14:30:00Z",
     updated_at: "2024-01-22T14:30:00Z"
@@ -87,7 +134,9 @@ const mockListings: Listing[] = [
   {
     id: "4",
     organization_id: "org4",
+    slug: "boutique-fashion-house",
     title: "Boutique Fashion House",
+    tagline: "Trendy styles, curated collections",
     description: "Trendy clothing and accessories for the modern professional. Curated collections from local and international designers.",
     category: "Retail",
     tags: ["fashion", "clothing", "accessories", "designer", "trendy"],
@@ -102,19 +151,35 @@ const mockListings: Listing[] = [
       saturday: { open: "09:00", close: "20:00" },
       sunday: { open: "11:00", close: "18:00" }
     },
-    status: "published",
+    price_range: "luxury",
     images: [],
+    videos: [],
+    faqs: [],
+    announcements: [],
+    deals: [],
+    menu: [],
+    events: [],
+    contact_email: "info@boutiquefashion.com",
+    social_links: {
+      instagram: "https://instagram.com/boutiquefashion"
+    },
+    reviews: [],
+    rating: 4.6,
+    review_count: 234,
+    booking_enabled: false,
+    status: "published",
     featured_until: "2024-03-01T00:00:00Z",
+    verified: true,
     created_by: "user4",
     created_at: "2024-01-05T09:00:00Z",
     updated_at: "2024-01-25T16:45:00Z"
   }
 ];
 
-export function Search() {
+export default function Search() {
+  const [listings] = useState<Listing[]>(mockListings);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [showFilters, setShowFilters] = useState(false);
-  
+
   const {
     searchQuery,
     setSearchQuery,
@@ -129,206 +194,151 @@ export function Search() {
     sortBy,
     setSortBy,
     filteredResults
-  } = useSearch(mockListings);
-
-  const activeFiltersCount = [
-    selectedCategory !== "all",
-    selectedStatus !== "all", 
-    selectedDistrict !== "all",
-    selectedChiefdom !== "all"
-  ].filter(Boolean).length;
+  } = useSearch(listings);
 
   const handleClearFilters = () => {
+    setSearchQuery("");
     setSelectedCategory("all");
     setSelectedStatus("all");
     setSelectedDistrict("all");
     setSelectedChiefdom("all");
-    setSearchQuery("");
+    setSortBy("relevance");
+  };
+
+  const activeFiltersCount = [
+    searchQuery !== "",
+    selectedCategory !== "all",
+    selectedStatus !== "all",
+    selectedDistrict !== "all",
+    selectedChiefdom !== "all"
+  ].filter(Boolean).length;
+
+  const handleViewListing = (id: string) => {
+    const listing = listings.find(l => l.id === id);
+    if (listing) {
+      window.open(`/listings/${listing.slug}`, '_blank');
+    }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Search Directory</h1>
-          <p className="text-muted-foreground mt-1">
-            Find businesses and services using natural language or filters
-          </p>
+      <div className="border-b bg-card">
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold mb-2">Find Your Perfect Match</h1>
+            <p className="text-muted-foreground">
+              Discover amazing businesses and services in your area
+            </p>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="relative">
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search for businesses, services, or categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 h-12 text-lg"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Try: 'affordable coffee shops' or 'tech repair services'"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 text-base"
-              />
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="relative"
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-                {activeFiltersCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs"
-                  >
-                    {activeFiltersCount}
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Filters Sidebar */}
+          <div className="lg:col-span-1">
+            <SearchFilters
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              selectedStatus={selectedStatus}
+              setSelectedStatus={setSelectedStatus}
+              selectedDistrict={selectedDistrict}
+              setSelectedDistrict={setSelectedDistrict}
+              selectedChiefdom={selectedChiefdom}
+              setSelectedChiefdom={setSelectedChiefdom}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              onClearFilters={handleClearFilters}
+              activeFiltersCount={activeFiltersCount}
+            />
+          </div>
+
+          {/* Results */}
+          <div className="lg:col-span-3">
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-semibold">
+                  {filteredResults.length} results found
+                </h2>
+                {searchQuery && (
+                  <Badge variant="outline" className="bg-primary/10">
+                    Search: "{searchQuery}"
                   </Badge>
                 )}
-              </Button>
-              
-              <div className="flex items-center gap-1 border rounded-md">
+              </div>
+
+              <div className="flex items-center gap-2">
                 <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="icon"
                   onClick={() => setViewMode("grid")}
-                  className="rounded-r-none"
                 >
                   <Grid className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="icon"
                   onClick={() => setViewMode("list")}
-                  className="rounded-l-none"
                 >
                   <List className="h-4 w-4" />
                 </Button>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Advanced Filters */}
-      {showFilters && (
-        <SearchFilters
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          selectedDistrict={selectedDistrict}
-          setSelectedDistrict={setSelectedDistrict}
-          selectedChiefdom={selectedChiefdom}
-          setSelectedChiefdom={setSelectedChiefdom}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          onClearFilters={handleClearFilters}
-          activeFiltersCount={activeFiltersCount}
-        />
-      )}
-
-      {/* Results Summary */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{filteredResults.length}</span> 
-            {filteredResults.length === 1 ? ' result' : ' results'} found
-            {searchQuery && (
-              <span> for "{searchQuery}"</span>
-            )}
-          </p>
-          
-          {activeFiltersCount > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Active filters:</span>
-              {selectedCategory !== "all" && (
-                <Badge variant="secondary" className="text-xs">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {selectedCategory}
-                </Badge>
-              )}
-              {selectedStatus !== "all" && (
-                <Badge variant="secondary" className="text-xs">
-                  Status: {selectedStatus}
-                </Badge>
-              )}
-              {selectedDistrict !== "all" && (
-                <Badge variant="secondary" className="text-xs">
-                  District: {selectedDistrict}
-                </Badge>
-              )}
-              {selectedChiefdom !== "all" && (
-                <Badge variant="secondary" className="text-xs">
-                  Chiefdom: {selectedChiefdom}
-                </Badge>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearFilters}
-                className="h-6 px-2 text-xs"
-              >
-                Clear all
-              </Button>
+            {/* Results */}
+            <div className={
+              viewMode === "grid" 
+                ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                : "space-y-4"
+            }>
+              {filteredResults.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  onEdit={() => console.log("Edit", listing.id)}
+                  onView={() => handleViewListing(listing.id)}
+                  onToggleStatus={() => console.log("Toggle", listing.id)}
+                  showLocation={true}
+                />
+              ))}
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Results Grid/List */}
-      <div className="space-y-4">
-        {filteredResults.length > 0 ? (
-          <div className={
-            viewMode === "grid" 
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              : "space-y-4"
-          }>
-            {filteredResults.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                onEdit={() => console.log("Edit", listing.id)}
-                onView={() => window.open(`/listings/${listing.id}`, '_blank')}
-                onToggleStatus={() => console.log("Toggle status", listing.id)}
-                showLocation={true}
-              />
-            ))}
-          </div>
-        ) : (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <div className="space-y-4">
-                <SearchIcon className="h-12 w-12 text-muted-foreground mx-auto" />
-                <div>
-                  <h3 className="text-lg font-medium text-foreground mb-2">
-                    No results found
-                  </h3>
+            {/* No Results */}
+            {filteredResults.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <SearchIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">No results found</h3>
                   <p className="text-muted-foreground mb-4">
-                    We couldn't find any listings matching your search criteria.
+                    Try adjusting your search terms or filters
                   </p>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p>Try:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Using different keywords</li>
-                      <li>Removing some filters</li>
-                      <li>Checking your spelling</li>
-                      <li>Using more general terms</li>
-                    </ul>
-                  </div>
-                </div>
-                {(searchQuery || activeFiltersCount > 0) && (
-                  <Button variant="outline" onClick={handleClearFilters}>
-                    Clear search and filters
+                  <Button 
+                    variant="outline" 
+                    onClick={handleClearFilters}
+                  >
+                    Clear Filters
                   </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
