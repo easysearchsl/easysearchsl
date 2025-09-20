@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, Building2, Star, TrendingUp, Users, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MainNavigation } from "@/components/layout/MainNavigation";
 
 const Index = () => {
   const categories = [
@@ -40,6 +41,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <MainNavigation />
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-b border-border">
         <div className="container mx-auto px-4 py-16">
