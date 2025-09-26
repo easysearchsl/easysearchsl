@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tenant-compass-directory</title>
+    <meta name="description" content="Lovable Generated Project" />
+    <meta name="author" content="Lovable" />
+
+    <!-- Initial Preloader (inline CSS for zero-FoUC) -->
+    <style>
+      /* Colors: #29a2d4, #e86625, #2f2f2f, #ffffff */
+      #es-initial-preloader {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: #ffffff;
+        z-index: 9999;
+        transition: opacity .3s ease, visibility .3s ease;
+      }
+      #es-initial-preloader.fade-out { opacity: 0; visibility: hidden; }
+      .es-initial-box { display: grid; gap: 14px; place-items: center; }
+      .es-initial-ring {
+        width: clamp(56px, 10vw, 84px);
+        height: clamp(56px, 10vw, 84px);
+        border-radius: 50%;
+        position: relative;
+        animation: es-spin 1.1s linear infinite;
+      }
+      .es-initial-ring::before {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: 50%;
+        padding: 3px;
+        background: conic-gradient(#29a2d4, #e86625, #2f2f2f, #29a2d4);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude;
+      }
+      .es-initial-brand { font: 600 clamp(14px,2.6vw,18px)/1.2 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji"; }
+      .es-initial-brand .blue{color:#29a2d4}.es-initial-brand .orange{color:#e86625}.es-initial-brand .dark{color:#2f2f2f}
+      @keyframes es-spin { to { transform: rotate(360deg) } }
+      @media (prefers-reduced-motion: reduce) { .es-initial-ring { animation-duration: 2.2s } }
+    </style>
+
+    <!-- Dynamic Open Graph & Twitter tags are injected per-listing at runtime in ListingView.tsx.
+         We intentionally avoid static OG/Twitter tags here to prevent conflicts during prerendering. -->
+  </head>
+
+  <body>
+    <div id="es-initial-preloader" aria-hidden="true">
+      <div class="es-initial-box" role="status" aria-label="Loading">
+        <div class="es-initial-ring"></div>
+        <div class="es-initial-brand"><span class="blue">Easy</span><span class="orange">Search</span><span class="dark"> SL</span></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
