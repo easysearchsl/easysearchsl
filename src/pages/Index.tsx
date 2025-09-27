@@ -35,8 +35,21 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-b border-border">
-        <div className="container mx-auto px-4 py-16">
+      <div className="relative border-b border-border overflow-hidden">
+        {/* Background image + overlay */}
+        <div className="absolute inset-0">
+          {(() => {
+            const heroImage = (featured.find(l => Array.isArray(l.images) && l.images[0])?.images?.[0]) || '/placeholder.svg';
+            return (
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('${heroImage}')` }}
+              />
+            );
+          })()}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 to-background/90" />
+        </div>
+        <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
               Discover Local Businesses
