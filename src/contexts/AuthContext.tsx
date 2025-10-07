@@ -24,7 +24,8 @@ interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   loginWithEmailPassword: (email: string, password: string, remember?: boolean) => Promise<void>;
-  register: (full_name: string, email: string) => Promise<void>;
+  register: (full_name: string, email: string, password: string) => Promise<{ emailConfirmationRequired: boolean }>;
+  loginWithGoogle: (next?: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -143,6 +144,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const session = sessionRes?.session;
       const sUser = session?.user;
       if (!sUser) return null;
+      // Ensure profile exists/up-to-date on OAuth or any sign-in
+      try {
+        const fullNameMeta = (sUser.user_metadata?.full_name as string)
+          || (sUser.user_metadata?.name as string)
+          || sUser.email
+          || 'User';
+        await supabase.from('profiles').upsert({
+          id: sUser.id,
+          full_name: fullNameMeta,
+        }, { onConflict: 'id' });
+      } catch {}
       const role = await computeRoleForUser(sUser.id);
       const full_name = (sUser.user_metadata?.full_name as string) || (sUser.user_metadata?.name as string) || sUser.email || "User";
       const avatar_url = (sUser.user_metadata?.avatar_url as string) || undefined;
@@ -170,11 +182,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
-  const loginWithEmailPassword = async (email: string, password: string, remember: boolean = true) => {
+  const loginWithGoogle = async (next?: string) => {
     if (!supabaseEnvAvailable()) {
-      throw new Error("Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
+      throw new Error("Supabase is not configured for OAuth.");
     }
-    // Set Supabase persistence mode for smart storage
+    const redirectTo = `${window.location.origin}${next ? next : '/dashboard'}`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+      },
+    });
+    if (error) throw new Error(error.message || 'Failed to start Google sign-in');
+    // On success, browser redirects to Supabase then back to our site.
+  };
+
+
+  const loginWithEmailPassword = async (email: string, password: string, remember: boolean = true) => {
+    const configured = supabaseEnvAvailable();
+    if (import.meta.env?.DEV) {
+      try {
+        const env: any = (import.meta as any)?.env || {};
+        console.log('[Auth] supabaseEnvAvailable =', configured);
+        console.log('[Auth] VITE_SUPABASE_URL =', env.VITE_SUPABASE_URL || '(missing)');
+        console.log('[Auth] VITE_SUPABASE_ANON_KEY set =', !!env.VITE_SUPABASE_ANON_KEY);
+      } catch {}
+    }
+    // Proceed even if quick env check says false; the Supabase client will return a clear error if misconfigured.
     try {
       localStorage.setItem(SB_PERSIST_KEY, remember ? "local" : "session");
     } catch {}
@@ -190,13 +224,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(authUser);
   };
 
-  const register = async (full_name: string, email: string) => {
+  const register = async (full_name: string, email: string, password: string) => {
     if (supabaseEnvAvailable()) {
-      // Send magic link (OTP) to email; do not set local user
       const redirectTo = `${window.location.origin}/login`;
-      const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
-      if (error) throw new Error(error.message || "Failed to start sign-up. Try again.");
-      return;
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name },
+          emailRedirectTo: redirectTo,
+        },
+      });
+      if (error) throw new Error(error.message || "Failed to sign up. Try again.");
+
+      // If confirm email is required, there will be no session
+      const hasSession = !!data.session;
+      if (hasSession) {
+        const authUser = await supabaseUserToAuthUser();
+        if (authUser) setUser(authUser);
+      }
+      return { emailConfirmationRequired: !hasSession };
     } else {
       // Local mock fallback (dev-only)
       const newUser: AuthUser = {
@@ -207,6 +254,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         memberships: [],
       };
       setUser(newUser);
+      return { emailConfirmationRequired: false };
     }
   };
 
@@ -242,7 +290,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isAuthenticated, loginWithEmailPassword, register, logout }),
+    () => ({ user, isAuthenticated, loginWithEmailPassword, register, loginWithGoogle, logout }),
     [user]
   );
 

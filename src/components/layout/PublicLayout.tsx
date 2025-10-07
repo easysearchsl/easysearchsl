@@ -34,7 +34,7 @@ export function PublicLayout() {
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2" aria-label="Go to home">
             <img src="/favicon.ico" alt="Logo" className="h-6 w-6" />
-            <span className="font-semibold text-foreground">EasySearch</span>
+            <span className="font-semibold text-foreground">EasySearch SL</span>
           </Link>
         </div>
 
@@ -129,7 +129,7 @@ export function PublicLayout() {
           <div>
             <Link to="/" className="flex items-center gap-2" aria-label="Go to home">
               <img src="/favicon.ico" alt="Logo" className="h-6 w-6" />
-              <span className="font-semibold text-foreground">EasySearch</span>
+              <span className="font-semibold text-foreground">EasySearch SL</span>
             </Link>
             <p className="mt-3 text-sm text-foreground/70 max-w-sm">
               Discover and connect with businesses, products, and services across Sierra Leone.

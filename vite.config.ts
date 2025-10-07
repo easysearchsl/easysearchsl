@@ -9,6 +9,8 @@ import autoprefixer from "autoprefixer";
 export default defineConfig(({ mode }) => ({
   // Avoid OneDrive file locking by placing Vite cache in system temp
   cacheDir: path.resolve(os.tmpdir(), "vite-cache-easysearchsl"),
+  // Force Vite to read env files from this project root
+  envDir: __dirname,
   server: {
     host: "::",
     port: 8080,

@@ -4,7 +4,7 @@ export default function About() {
       {/* Hero */}
       <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b border-border">
         <div className="container mx-auto px-4 py-16 md:py-20">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">About EasySearch</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">About EasySearch SL</h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl">
             Connecting people and businesses in Sierra Leone and beyond.
           </p>
@@ -14,11 +14,11 @@ export default function About() {
       {/* About EasySearch */}
       <section className="container mx-auto px-4 py-12 md:py-16">
         <div className="max-w-4xl">
-          <h2 className="text-2xl font-semibold mb-3">What is EasySearch?</h2>
+          <h2 className="text-2xl font-semibold mb-3">What is EasySearch SL?</h2>
           <p className="text-foreground/80 leading-relaxed">
-            EasySearch is a business directory and discovery platform designed to connect users with
+            EasySearch SL is a business directory and discovery platform designed to connect users with
             businesses, products, and services. Whether you’re a small shop owner or a large enterprise,
-            EasySearch provides the tools to help your business grow and reach the right audience.
+            EasySearch SL provides the tools to help your business grow and reach the right audience.
           </p>
         </div>
       </section>
@@ -71,7 +71,7 @@ export default function About() {
           <div className="absolute -left-[6px] top-0 h-3 w-3 rounded-full bg-primary" />
           <div className="mb-6">
             <div className="text-sm text-foreground/60">Founded</div>
-            <p className="text-foreground/90">Founded in [Year], EasySearch started as a simple idea to make businesses more discoverable online.</p>
+            <p className="text-foreground/90">Founded in [Year], EasySearch SL started as a simple idea to make businesses more discoverable online.</p>
           </div>
           <div className="absolute -left-[6px] top-[82px] h-3 w-3 rounded-full bg-primary/70" />
           <div>
@@ -100,7 +100,7 @@ export default function About() {
       {/* Call to Action */}
       <section className="container mx-auto px-4 py-14 md:py-16">
         <div className="rounded-lg border border-border bg-card p-8 md:p-10 text-center">
-          <h3 className="text-2xl font-semibold">Join EasySearch Today</h3>
+          <h3 className="text-2xl font-semibold">Join EasySearch SL Today</h3>
           <p className="mt-2 text-foreground/80 max-w-2xl mx-auto">Register your business and connect with customers looking for your products and services.</p>
           <div className="mt-5">
             <a href="/register" className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-primary-foreground hover:opacity-90 transition">Register Your Business</a>

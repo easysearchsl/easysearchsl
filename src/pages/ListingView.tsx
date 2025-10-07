@@ -105,7 +105,7 @@ export default function ListingView() {
   };
 
   useEffect(() => {
-    document.title = listing ? `${listing.title} | EasySearch` : 'Loading...';
+    document.title = listing ? `${listing.title} | EasySearch SL` : 'Loading...';
   }, [listing]);
 
   // Dynamically set Open Graph and Twitter meta tags for social share previews
@@ -114,8 +114,8 @@ export default function ListingView() {
     const doc = document;
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const url = `${origin}/listings/${listing.slug}`;
-    const title = `${listing.title} | EasySearch`;
-    const description = listing.tagline || listing.description || 'Discover this business on EasySearch.';
+    const title = `${listing.title} | EasySearch SL`;
+    const description = listing.tagline || listing.description || 'Discover this business on EasySearch SL.';
     const fallbackOg = 'https://lovable.dev/opengraph-image-p98pqg.png';
     const image = listing.logo_url || (Array.isArray(listing.images) && listing.images[0]) || fallbackOg;
 

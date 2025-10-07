@@ -233,7 +233,7 @@ const Index = () => {
         <div className="rounded-lg border border-border bg-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-2xl font-semibold">Are you a business owner?</h3>
-            <p className="text-muted-foreground mt-1">List your business on EasySearch to reach more customers.</p>
+            <p className="text-muted-foreground mt-1">List your business on EasySearch SL to reach more customers.</p>
           </div>
           <div className="flex gap-3">
             <Link to="/register">
@@ -256,7 +256,7 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <Card>
               <CardContent className="p-6">
-                <p className="text-sm text-foreground/90">“EasySearch helped me find reliable suppliers within days. Highly recommend!”</p>
+                <p className="text-sm text-foreground/90">“EasySearch SL helped me find reliable suppliers within days. Highly recommend!”</p>
                 <div className="mt-3 text-sm text-muted-foreground">— Mariama K.</div>
               </CardContent>
             </Card>

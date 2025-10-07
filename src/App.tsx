@@ -58,6 +58,7 @@ import AdminSettings from "./pages/admin/Settings";
 import AdminLogs from "./pages/admin/Logs";
 import UserSettings from "./pages/Settings";
 import EnvDiagnostics from "./pages/EnvDiagnostics";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -77,7 +78,7 @@ const App = () => {
       const samples: StoreNotification[] = [
         {
           id: "seed-notif-all-1",
-          title: "Welcome to EasySearch",
+          title: "Welcome to EasySearch SL",
           message: "Thanks for joining! Explore listings and features across the platform.",
           createdAt: new Date(now - 60_000).toISOString(),
           type: "system",
@@ -199,6 +200,7 @@ const App = () => {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/env" element={<EnvDiagnostics />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />

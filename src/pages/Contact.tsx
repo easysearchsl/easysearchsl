@@ -50,7 +50,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b border-border">
         <div className="container mx-auto px-4 py-16 md:py-20">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">Get in Touch with EasySearch</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">Get in Touch with EasySearch SL</h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl">
             We’re here to answer your questions, support your business, and help you connect with opportunities.
           </p>
@@ -75,7 +75,7 @@ export default function Contact() {
             {/* Optional Map */}
             <div className="rounded-lg overflow-hidden border border-border">
               <iframe
-                title="EasySearch Office Map"
+                title="EasySearch SL Office Map"
                 className="w-full h-60"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -141,7 +141,7 @@ export default function Contact() {
         <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="rounded-lg border border-border bg-card p-4">
-            <div className="font-medium">How do I register my business on EasySearch?</div>
+            <div className="font-medium">How do I register my business on EasySearch SL?</div>
             <p className="mt-1 text-sm text-foreground/80">Click Register and follow the steps to create your listing.</p>
           </div>
           <div className="rounded-lg border border-border bg-card p-4">
@@ -149,7 +149,7 @@ export default function Contact() {
             <p className="mt-1 text-sm text-foreground/80">Featured listings gain more visibility across the platform.</p>
           </div>
           <div className="rounded-lg border border-border bg-card p-4">
-            <div className="font-medium">Is EasySearch free to use?</div>
+            <div className="font-medium">Is EasySearch SL free to use?</div>
             <p className="mt-1 text-sm text-foreground/80">Browsing is free. Optional paid plans unlock promotional features.</p>
           </div>
         </div>

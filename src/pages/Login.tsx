@@ -8,12 +8,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
-  const { loginWithEmailPassword } = useAuth();
+  const { loginWithEmailPassword, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [oauthLoading, setOauthLoading] = useState(false);
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next") || "/dashboard";
@@ -29,6 +31,19 @@ export default function Login() {
       setError(err?.message || "Sign-in failed. Please check your credentials.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onGoogle = async () => {
+    setOauthLoading(true);
+    setOauthError(null);
+    try {
+      await loginWithGoogle(next);
+      // Redirect will occur via Supabase OAuth flow
+    } catch (err: any) {
+      setOauthError(err?.message || "Google sign-in failed.");
+    } finally {
+      setOauthLoading(false);
     }
   };
 
@@ -63,7 +78,18 @@ export default function Login() {
             </Button>
           </form>
 
-          
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
+          {oauthError && <div className="text-sm text-red-600 mb-2">{oauthError}</div>}
+          <Button type="button" variant="outline" className="w-full" onClick={onGoogle} disabled={oauthLoading}>
+            {oauthLoading ? "Connecting..." : "Continue with Google"}
+          </Button>
 
           <div className="mt-6 text-sm">
             New here? <Link to={`/register?next=${encodeURIComponent(next)}`} className="text-primary underline">Create an account</Link>

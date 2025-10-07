@@ -25,13 +25,20 @@ export default function ForgotPassword() {
       if (supabaseEnvAvailable()) {
         const mod = await import("@/lib/supabase");
         const supabase = (mod as any).supabase as import("@supabase/supabase-js").SupabaseClient;
-        const redirectTo = `${window.location.origin}/login`;
+        const redirectTo = `${window.location.origin}/reset-password`;
         const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
         if (error) throw error;
         setMessage("If an account exists for that email, a reset link has been sent. Please check your inbox.");
       } else {
-        // Demo mode (no Supabase). Simulate success.
-        setMessage("This demo shows the reset flow UI. Configure Supabase to enable email resets.");
+        // Env not configured: for security/UX, return a generic success message (avoid email enumeration)
+        setMessage("If an account exists for that email, a reset link has been sent. Please check your inbox.");
+        if ((import.meta as any)?.env?.DEV) {
+          // Helpful hint in dev only
+          // eslint-disable-next-line no-console
+          console.info(
+            "[ForgotPassword] Supabase env missing; showing generic success. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable email resets."
+          );
+        }
       }
     } catch (err: any) {
       setError(err?.message || "Failed to request password reset. Please try again.");

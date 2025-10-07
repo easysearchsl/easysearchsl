@@ -3,6 +3,17 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Dev-only diagnostics (won't run in production build). Avoid logging full keys.
+if (import.meta.env?.DEV) {
+  try {
+    const masked = typeof supabaseAnonKey === 'string' && supabaseAnonKey.length > 8
+      ? `${supabaseAnonKey.slice(0, 6)}…${supabaseAnonKey.slice(-4)}`
+      : supabaseAnonKey ? 'set' : 'missing';
+    console.log('[Supabase] VITE_SUPABASE_URL =', supabaseUrl || '(missing)');
+    console.log('[Supabase] VITE_SUPABASE_ANON_KEY =', masked);
+  } catch {/* noop */}
+}
+
 const PERSIST_KEY = 'easysearch.auth.persist';
 type PersistMode = 'local' | 'session';
 
